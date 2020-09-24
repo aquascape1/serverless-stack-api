@@ -1,0 +1,8 @@
+{
+  "body": "{\"personName\":\"bob lee\",\"company\":\"amazon\"}",
+  "requestContext": {
+    "identity": {
+      "cognitoIdentityId": "USER-SUB-1234"
+    }
+  }
+}

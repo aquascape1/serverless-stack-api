@@ -4,6 +4,8 @@ custom:
   stage: ${opt:stage, self:provider.stage}
   # Set the table name here so we can use it while testing locally
   tableName: ${self:custom.stage}-notes
+  userTableName: ${self:custom.stage}-users
+  userCalendar: ${self:custom.stage}-calendar
 
 service: notes-app-2-api
 
@@ -26,6 +28,8 @@ provider:
   # under process.env.
   environment:
     tableName: ${self:custom.tableName}
+    userTableName: ${self:custom.userTableName}
+    userCalendar: ${self:custom.userCalendar}
     stripeSecretKey: ${env:STRIPE_SECRET_KEY}
 
   # 'iamRoleStatements' defines the permission policy for the Lambda function.
@@ -44,6 +48,8 @@ provider:
       # the specific table for the stage
       Resource:
         - "Fn::GetAtt": [ NotesTable, Arn ]
+        - "Fn::GetAtt": [ UserTable, Arn ]
+        - "Fn::GetAtt": [ UserCalendar, Arn ]
 
 functions:
   # Defines an HTTP API endpoint that calls the main function in create.js
@@ -114,6 +120,54 @@ functions:
       - http:
           path: billing
           method: post
+          cors: true
+          authorizer: aws_iam
+  createUser:
+    handler: createUser.main
+    events:
+      - http:
+          path: users
+          method: post
+          cors: true
+          authorizer: aws_iam
+  getUser:
+    handler: getUser.main
+    events:
+      - http:
+          path: users
+          method: get
+          cors: true
+          authorizer: aws_iam
+  updateUser:
+    handler: updateUser.main
+    events:
+      - http:
+          path: users
+          method: put
+          cors: true
+          authorizer: aws_iam
+  getAllUsers:
+    handler: getAllUsers.main
+    events:
+      - http:
+          path: users/getAllUsers
+          method: get
+          cors: true
+          authorizer: aws_iam
+  updateCalendar:
+    handler: updateCalendar.main
+    events:
+      - http:
+          path: calendar
+          method: put
+          cors: true
+          authorizer: aws_iam
+  getCalendar:
+    handler: getCalendar.main
+    events:
+      - http:
+          path: calendar
+          method: get
           cors: true
           authorizer: aws_iam
 # Create our resources with separate CloudFormation templates

@@ -96,6 +96,9 @@ Deploy a single function
 
 ``` bash
 $ serverless deploy function --function hello
+$ serverless invoke local --function createUser --path mocks/createUser-event.json
+$ serverless invoke local --function getUser --path mocks/getUser-event.json
+$ serverless invoke local --function updateUser --path mocks/updateUser-event.json
 ```
 
 #### Running Tests
